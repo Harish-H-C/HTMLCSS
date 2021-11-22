@@ -1,0 +1,95 @@
+import React, { Component } from 'react';
+
+
+const durl = "http://localhost:8901/devices"
+const url="http://localhost:8901/sensor";
+
+
+class Detailed extends Component{
+  constructor(){
+    super()
+    this.state = {
+      devices:'',
+      sensor:''
+    }
+  }
+
+  renderDevices = (data) => {
+    // console.log("data>>>",data)
+    if(data){
+      return data.map((item) => {
+          return(
+            <option value = {item.devices}>
+                {item.devices}.{item.device_name}
+            </option>
+          )
+      })
+    }
+  }
+
+  renderUser = ( data1 ) => {
+    // console.log("data1>>>",data1)
+    if(data1){
+        return data1.map((item) => {
+            return(
+                <tr>
+                    <td>{item.ID}</td>
+                    <td>{item.Device}</td>
+                    <td>{item.Date}</td>
+                </tr>
+            )
+        })
+    }
+  }
+
+  render(){
+    return(
+      <div>
+        <div className="container">
+          <div className="form-group">
+            <label for="sel1">Select Devices</label>
+            <select class="form-control" id="sel1" name="sellist1">
+                <option>----Select Devices----</option>
+                {this.renderDevices(this.state.devices)}
+            </select>
+            <div className="pb-2" />
+            <table className="table table-striped table-bordered " id="customers1">
+                    <thead>
+                        {/* <tr>
+                            <th>Nr</th>
+                            <th>Device ID</th>
+                            <th>Device Name</th>
+                            <th>Value</th>
+                            <th>Date&Time</th>
+                        </tr> */}
+                        <tr>
+                            <th>Nr</th>
+                            <th>Device Name</th>
+                            <th>Last Received Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {this.renderUser(this.state.sensor)}
+                    </tbody>
+                </table>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  componentDidMount(){
+    fetch(durl,{method:'GET'})
+    .then((res) => res.json())
+    // .then((data) => {console.log(data)})
+    .then((data) => this.setState({devices:data}))
+
+    fetch(url,{method:'GET'})
+    .then((response) => response.json())
+    // .then((data1) =>{console.log(data1)})
+    .then((data1) => {this.setState({sensor:data1})})
+  }
+}
+
+
+export default Detailed;
